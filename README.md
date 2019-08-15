@@ -64,3 +64,53 @@
 1. 为加载更多按钮，绑定点击事件，在事件中，请求 下一页数据
 2. 点击加载更多，让 pageIndex++， 然后重新调用 this.getComments()方法重新获取最新一页的数据
 3. 为了防止旧数据覆盖 老数据的情况，在点击加载更多的时候让老数据调用 数组的 concat方法，拼接上新数据
+
+## 发表评论
+1. 把文本框做双向数据绑定
+2. 为发表按钮绑定一个事件
+3. 校验评论内容是否为空，如果为空，则Toast提示用户 评论内容不能为空
+4. 通过 vue-resource 发送一个请求，把评论内容提交给服务器
+5. 当发表评论完成后，重新刷新列表，以查看最新的评论
++ 如果调用 getComments 方法重新刷新评论列表的话，可能只能得到 最后一页的评论，前几页的评论获取不到
++ 所以，当评论成功后，在客户端，手动拼接出一个 新的评论对象，然后 调用数组的
+unshift 方法，把最新的评论 追加到 data 中 cmts 的开头，这样就实现了刷新评论列表的需求
+
+## 改造图片分享按钮为路由的链接并显示对应组件
+
+## 绘制 图片列表 组件页面结构并美化样式
+1. 制作 顶部的滑动条
+2. 制作 底部的图片列表
+### 制作顶部滑动条的坑们
+1. 借用 MUI 中的 tab-top-webview-main.html
+2. 把 slider 区域的 mui-fullscreen 类去掉
+3. 把JS组件 import mui from 'mui.js' 导入进来 然后初始化
+
+``` mui('.mui-scroll-wrapper').scroll({
+	deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
+}); ```
+
+4. 在初始化 滑动条是 导入的 mui.js 报错："Uncaught TypeError: 'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them"
+
+ 'caller', 'callee', and 'arguments'这几个东西跟webpack 使用严格模式打包有冲突 所以， 在.babelrc配置文件plugins中加入"transform-remove-strict-mode"
+
+{
+  "plugins": ["transform-remove-strict-mode"]
+}
+取消webpack使用严格模式打包
+
+5. 刚进入图片分享页面的时候，滑动条无法正常工作，经分析得：如果要初始化
+滑动条，必须要等 DOM 元素加载完毕，所以，我们把 初始化 滑动条的代码，搬到了
+mounted 生命周期函数中
+6. 当 滑动条 可以正常使用时， tabbar无法正常使用，这时，要把每个 tabbar 按钮的样式中 'mui-tab-item' 重新改一下名字
+
+
+### 实现了 图片列表的 懒加载改造和 样式美化
+
+## 实现了 点击图片 转跳到 图片详情页面
+1. 在改造 li 成 router-link 的时候，需要使用 tag 属性指定渲染成 li 元素
+
+## 实现 图片详情中 缩略图的功能
+1. 使用插件 vue-preview 这个缩略图插件
+2. 获取所有的图片列表，然后使用 v-for 指令渲染数据
+3. 注意：img标签上的class不能去掉
+4. 每个图片数据对象中设置 w 和 h 属性
