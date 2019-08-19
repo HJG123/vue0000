@@ -1,7 +1,11 @@
 <template>
    <div class="myapp">
        <!-- 顶部header区域 -->
-       <mt-header fixed title="我的APP"></mt-header>
+       <mt-header fixed title="我的APP">
+            <span slot="left">
+                <mt-button icon="back" @click="goback" v-show="flag">返回</mt-button>
+            </span>
+       </mt-header>
 
        <!-- 中间的 router-view 区域 -->
        <transition>
@@ -20,7 +24,7 @@
 			</router-link>
 			<router-link class="mui-tab-item-ag" to="/shopcar">
 				<span class="mui-icon mui-icon-extra mui-icon-extra-cart">
-                    <span class="mui-badge" id="badge">0</span></span>
+                    <span class="mui-badge" id="badge">{{ $store.getters.getAllCount }}</span></span>
 				<span class="mui-tab-label">购物车</span>
 			</router-link>
 			<router-link class="mui-tab-item-ag" to="/search">
@@ -32,7 +36,30 @@
    </div>
 </template>
 <script>
-
+export default {
+    data(){
+        return{
+            flag:false
+        }
+    },
+    created(){
+        this.$route.path === "/home"?this.flag=false:this.flag=true
+    },
+    methods:{
+        goback(){
+            this.$router.go(-1)
+        }
+    },
+    watch:{
+        "$route.path":function(newVal){
+            if(newVal === "/home"){
+                this.flag = false
+            }else{
+                this.flag = true
+            }
+        }
+    }
+}
 </script>
 <style lang="scss" scoped>
 .mint-header {
